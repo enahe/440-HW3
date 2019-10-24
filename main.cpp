@@ -396,7 +396,8 @@ void initialize_flocking_simulation()
 
   }
   predator_array.push_back(new Predator(0, uniform_random(0, box_width), uniform_random(0, box_height), uniform_random(0, box_depth),
-	  uniform_random(-0.01, 0.01), uniform_random(-0.01, 0.01), uniform_random(-0.01, 0.01), 0.002, 1.0, 1.0, 1.0, 30));
+	  uniform_random(-0.01, 0.01), uniform_random(-0.01, 0.01), uniform_random(-0.01, 0.01), 0.002,
+	  0.05, 0.5, uniform_random(0.01, 0.03), 1.0, 1.0, 1.0, 30));
  
 }
 

@@ -35,16 +35,24 @@ class Predator : public Creature
 {
 public:
 	double random_force_limit;
+	double min_hunger_distance;
+	double max_hunger_distance;
+	double hunger_weight;
+	double max_squared_hunger_distance, min_squared_hunger_distance;
+	double inv_range_squared_hunger_distance;
+
   
   Predator(int,                    // index
 	   double, double, double, // initial position
 	   double, double, double, // initial velocity
 	   double, //randomness factor
+	   double, double, double,
 	   float, float, float,    // base color
 	   int = 1);               // number of past states to save
 
   void draw(glm::mat4);
   void update();
+  bool compute_hunger_force(); 
 
 
 };

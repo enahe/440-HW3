@@ -10,13 +10,13 @@
 //
 //----------------------------------------------------------------------------
 //----------------------------------------------------------------------------
-
+#define _USE_MATH_DEFINES
 #include "Predator.hh"
 
 //----------------------------------------------------------------------------
 //----------------------------------------------------------------------------
 
-extern vector <Flocker *> flocker_array;    
+extern vector <Flocker *> flocker_array;   
 vector <Predator*> predator_array; 
 int predator_history_length = 30;
 int predator_draw_mode= DRAW_MODE_POLY_PREDATOR;
@@ -26,6 +26,7 @@ extern glm::mat4 ProjectionMat;
 extern GLuint ModelMatrixID;
 extern GLuint ViewMatrixID;
 extern GLuint MatrixID;
+glm::vec3 hunger_force;
 
 
 //----------------------------------------------------------------------------
@@ -35,10 +36,18 @@ Predator::Predator(int _index,
 		 double init_x, double init_y, double init_z,
 		 double init_vx, double init_vy, double init_vz,
 		 double rand_force_limit, 
+		 double min_hung_distance, double max_hung_distance, double hung_weight,
 		 float r, float g, float b,
 		 int max_hist) : Creature(_index, init_x, init_y, init_z, init_vx, init_vy, init_vz, r, g, b, max_hist)
 { 
 	random_force_limit = rand_force_limit;
+	max_hunger_distance = max_hung_distance;
+	min_hunger_distance = min_hung_distance;
+	hunger_weight = hung_weight;
+	max_squared_hunger_distance = max_hunger_distance * max_hunger_distance;
+	min_squared_hunger_distance = min_hunger_distance * min_hunger_distance;
+	inv_range_squared_hunger_distance = 1.0 / (max_squared_hunger_distance - min_squared_hunger_distance);
+
 
 }
 
@@ -190,6 +199,46 @@ void Predator::draw(glm::mat4 Model)
 	free(color_buffer_data);
 }
 
+bool Predator::compute_hunger_force() {
+	int i, j;
+	double F, percent;
+	glm::vec3 diff; 
+	double diffNum;
+	glm::vec3 lowestDist;
+	double diffLowest;
+	glm::vec3 direction;
+
+	hunger_force = glm::vec3(0, 0, 0);
+	for (i = 0; i < flocker_array.size(); i++) {
+		diff = flocker_array[i]->position - position;
+		diffNum = glm::length2(diff);
+		if (i == 0) {
+			lowestDist = flocker_array[i]->position - position;
+			diffLowest = glm::length2(lowestDist);
+		}
+		else {
+			if (diffNum > diffLowest) {
+				lowestDist = diff;
+			}
+		}
+	} 
+	percent = (diffLowest - max_squared_hunger_distance) * inv_range_squared_hunger_distance;
+
+	F = 0.5 + -0.5 * cos(percent * 2.0 * M_PI); 
+	direction = (float)F * glm::normalize(lowestDist - position);
+	hunger_force += direction;
+	if (diffLowest == NULL) {
+		hunger_force *= (float)hunger_weight;
+		return true;
+	}
+	else {
+		return false; 
+	}
+
+
+
+
+}
 //----------------------------------------------------------------------------
 
 void Predator::update()
@@ -199,7 +248,16 @@ void Predator::update()
 	acceleration = glm::vec3(0, 0, 0);
 
 	// deterministic behaviors
+	compute_hunger_force();
+	acceleration += hunger_force;
 
+	draw_color.r = glm::length(hunger_force);
+	if (draw_color.r > 0) {
+		draw_color = glm::normalize(draw_color);
+	}
+	else {
+		draw_color = base_color;
+	}
 
 	// randomness
 
