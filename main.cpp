@@ -664,8 +664,9 @@ int main(int argc, char **argv)
 
 	for (int i = 0; i < flocker_array.size(); i++) {
 		flocker_array[i]->draw(M);
-		predator_array[0]->draw(M);
 	}
+
+	predator_array[0]->draw(M);
       
 	
 	

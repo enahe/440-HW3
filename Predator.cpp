@@ -60,9 +60,9 @@ void Predator::draw(glm::mat4 Model)
 		vertex_buffer_data = (GLfloat*)malloc(3 * num_vertices * sizeof(GLfloat));
 		color_buffer_data = (GLfloat*)malloc(3 * num_vertices * sizeof(GLfloat));
 
-		double width = 0.2f;
-		double height = 0.2f;
-		double length = 0.3f;
+		double width = 0.6f;
+		double height = 0.6f;
+		double length = 0.9f;
 
 		// horizontal
 
@@ -123,21 +123,21 @@ void Predator::draw(glm::mat4 Model)
 		int i;
 
 		for (i = 0; i < 6; i++) {
-			color_buffer_data[3 * i] = 1.0f;
-			color_buffer_data[3 * i + 1] = 0.0f;
-			color_buffer_data[3 * i + 2] = 0.0f;
+			color_buffer_data[3 * i] = 0.0f;
+			color_buffer_data[3 * i + 1] = 1.0f;
+			color_buffer_data[3 * i + 2] = 1.0f;
 		}
 
 		for (i = 6; i < 9; i++) {
-			color_buffer_data[3 * i] = 0.0f;
+			color_buffer_data[3 * i] = 0.5f;
 			color_buffer_data[3 * i + 1] = 0.0f;
 			color_buffer_data[3 * i + 2] = 1.0f;
 		}
 
 		for (i = 9; i < 12; i++) {
-			color_buffer_data[3 * i] = 0.0f;
+			color_buffer_data[3 * i] = 0.9f;
 			color_buffer_data[3 * i + 1] = 1.0f;
-			color_buffer_data[3 * i + 2] = 0.0f;
+			color_buffer_data[3 * i + 2] = 0.8f;
 		}
 	
 
