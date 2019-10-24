@@ -395,7 +395,7 @@ void initialize_flocking_simulation()
     flocker_squared_distance[i].resize(num_flockers);
 
   }
-  predator_array.push_back(new Predator(0, uniform_random(0, box_width), uniform_random(0, box_height), uniform_random(0, box_depth),
+  predator_array.push_back(new Predator(0, 4.0, 4.0, 4.0,
 	  uniform_random(-0.01, 0.01), uniform_random(-0.01, 0.01), uniform_random(-0.01, 0.01), 0.002,
 	  1.0, 1.5, uniform_random(0.01, 0.03),1.0, 1.0, 1.0, 30));
  

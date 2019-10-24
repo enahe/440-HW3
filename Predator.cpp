@@ -205,7 +205,7 @@ bool Predator::compute_hunger_force() {
 	glm::vec3 diff; 
 	double diffNum;
 	glm::vec3 lowestDist;
-	glm::vec3 lowestDistVelocity;
+	glm::vec3 lowestDistPosition;
 	double diffLowest;
 	glm::vec3 direction;
 
@@ -215,13 +215,13 @@ bool Predator::compute_hunger_force() {
 		diffNum = glm::length2(diff);
 		if (i == 0) {
 			lowestDist = flocker_array[i]->position - position;
-			lowestDistVelocity = flocker_array[i]->velocity;
+			lowestDistPosition = flocker_array[i]->position;
 			diffLowest = glm::length2(lowestDist);
 		}
 		else {
 			if (diffNum > diffLowest) {
 				lowestDist = diff;
-				lowestDistVelocity = flocker_array[i]->velocity;
+				lowestDistPosition = flocker_array[i]->position;
 				diffLowest = glm::length2(lowestDist);
 			}
 		}
@@ -229,7 +229,7 @@ bool Predator::compute_hunger_force() {
 
 	percent = (diffLowest - max_squared_hunger_distance) * inv_range_squared_hunger_distance;
 	F = 0.5 + -0.5 * cos(percent * 2.0 * M_PI);
-	direction = (float)F * glm::normalize(lowestDistVelocity);
+	direction = (float)F * glm::normalize(lowestDist);
 	hunger_force += direction;
 	if (diffLowest == NULL) {
 		hunger_force *= (float)hunger_weight;
