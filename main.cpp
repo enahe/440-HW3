@@ -2,7 +2,7 @@
 //
 // "Creature Box" -- flocking app
 //
-// by Christopher Rasmussen, cer@cis.udel.edu
+// by Eric Nahe, enahe@udel.edu
 //
 // 1.0: initial version, March, 2014
 // 1.1: updated for OpenGL 3.3, March 2016

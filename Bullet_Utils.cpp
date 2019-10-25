@@ -121,7 +121,7 @@ void bullet_add_obstacles()
 
   btCollisionShape* groundShape = new btStaticPlaneShape(btVector3(0, 1, 0), 0);
   btCollisionShape* leftWallShape = new btStaticPlaneShape(btVector3(1, 0, 0), 0);
-  btCollisionShape* rightWallShape = new btStaticPlaneShape(btVector3(-1, 0, 0), -1);
+  btCollisionShape* rightWallShape = new btStaticPlaneShape(btVector3(-1, 0, 0), -9);
 
   btDefaultMotionState* groundMotionState = new btDefaultMotionState(btTransform(btQuaternion(0, 0, 0, 1), btVector3(0, 0, 0)));
   btRigidBody::btRigidBodyConstructionInfo groundRigidBodyCI(0, groundMotionState, groundShape, btVector3(0, 0, 0));
