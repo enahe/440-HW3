@@ -120,11 +120,20 @@ void bullet_add_obstacles()
   // add the ground plane (not drawn)
 
   btCollisionShape* groundShape = new btStaticPlaneShape(btVector3(0, 1, 0), 0);
+  btCollisionShape* leftWallShape = new btStaticPlaneShape(btVector3(1, 0, 0), 0);
+  btCollisionShape* rightWallShape = new btStaticPlaneShape(btVector3(-1, 0, 0), -1);
 
   btDefaultMotionState* groundMotionState = new btDefaultMotionState(btTransform(btQuaternion(0, 0, 0, 1), btVector3(0, 0, 0)));
   btRigidBody::btRigidBodyConstructionInfo groundRigidBodyCI(0, groundMotionState, groundShape, btVector3(0, 0, 0));
+  btRigidBody::btRigidBodyConstructionInfo leftRigidBodyCI(0, groundMotionState, leftWallShape, btVector3(0, 0, 0));
+  btRigidBody::btRigidBodyConstructionInfo rightRigidBodyCI(0, groundMotionState, rightWallShape, btVector3(0, 0, 0));
   btRigidBody* groundRigidBody = new btRigidBody(groundRigidBodyCI);
+  btRigidBody* leftRigidBody = new btRigidBody(leftRigidBodyCI);
+  btRigidBody* rightRigidBody = new btRigidBody(rightRigidBodyCI);
+
   bullet_dynamicsWorld->addRigidBody(groundRigidBody);
+  bullet_dynamicsWorld->addRigidBody(leftRigidBody);
+  bullet_dynamicsWorld->addRigidBody(rightRigidBody);
 }
 
 //----------------------------------------------------------------------------
