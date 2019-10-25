@@ -56,6 +56,7 @@ btCollisionDispatcher* bullet_dispatcher;
 vector<btRigidBody*> bullet_rigidbodies;   // bullet side
 
 vector<glm::vec3> xyz_positions;        // ogl side
+vector<glm::vec3> xyz_velocity;
 vector<glm::quat> quat_orientations;     // ogl side
 
 float initialCameraZ = 25.0;
@@ -83,10 +84,12 @@ bool isRestarting = false;
 void copy_flocker_states_to_graphics_objects()
 {
   xyz_positions.resize(num_flockers);
+  xyz_velocity.resize(num_flockers);
   quat_orientations.resize(num_flockers);
 
   for (int i = 0; i < num_flockers; i++) {
     xyz_positions[i] = glm::vec3(flocker_array[i]->position.x, flocker_array[i]->position.y, flocker_array[i]->position.z);
+	xyz_velocity[i] = glm::vec3(flocker_array[i]->velocity.x, flocker_array[i]->velocity.y, flocker_array[i]->velocity.z);
     quat_orientations[i] = glm::normalize(glm::quat(glm::vec3((rand() / (RAND_MAX + 1.0)) * 360.0, (rand() / (RAND_MAX + 1.0)) * 360.0, (rand() / (RAND_MAX + 1.0)) * 360.0)));
   }
 }
@@ -102,6 +105,9 @@ void copy_graphics_objects_to_flocker_states()
     flocker_array[i]->position.x = xyz_positions[i].x;
     flocker_array[i]->position.y = xyz_positions[i].y;
     flocker_array[i]->position.z = xyz_positions[i].z;
+	flocker_array[i]->velocity.x = xyz_velocity[i].x;
+	flocker_array[i]->velocity.y = xyz_velocity[i].y;
+	flocker_array[i]->velocity.z = xyz_velocity[i].z;
   }
 }
 
@@ -247,9 +253,12 @@ void bullet_add_dynamic_objects()
 							 simplifiedShapeInertia);
     
     btRigidBody *rigidBody = new btRigidBody(rigidBodyCI);
+	rigidBody->activate();
+	
     
     bullet_rigidbodies.push_back(rigidBody);
     bullet_dynamicsWorld->addRigidBody(rigidBody);    
+	
   }
 }
 
@@ -318,8 +327,9 @@ void update_physics_simulation(float deltaTime)
   for (int i = 0; i < num_flockers; i++) {
 
     btTransform trans;
+	bullet_rigidbodies[i]->setLinearVelocity(btVector3(xyz_velocity[i].x, xyz_velocity[i].y, xyz_velocity[i].z));
     bullet_rigidbodies[i]->getMotionState()->getWorldTransform(trans);
-    
+	
     //      printf("%i height = %f\n", i, trans.getOrigin().getY()); fflush(stdout);
     xyz_positions[i].x = trans.getOrigin().getX();
     xyz_positions[i].y = trans.getOrigin().getY();
