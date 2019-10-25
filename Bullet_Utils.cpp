@@ -255,9 +255,12 @@ void bullet_add_dynamic_objects()
     btRigidBody *rigidBody = new btRigidBody(rigidBodyCI);
 	rigidBody->activate();
 	
-    
+	rigidBody->setLinearVelocity(btVector3(xyz_velocity[i].x, xyz_velocity[i].y, xyz_velocity[i].z));
     bullet_rigidbodies.push_back(rigidBody);
-    bullet_dynamicsWorld->addRigidBody(rigidBody);    
+    bullet_dynamicsWorld->addRigidBody(rigidBody);   
+
+
+	
 	
   }
 }
@@ -284,7 +287,7 @@ void initialize_bullet_simulator()
   // The world.
   
   bullet_dynamicsWorld = new btDiscreteDynamicsWorld(bullet_dispatcher, bullet_broadphase, bullet_solver, bullet_collisionConfiguration);
-  bullet_dynamicsWorld->setGravity(btVector3(0,-9.81f,0));
+  bullet_dynamicsWorld->setGravity(btVector3(0,0,0));
 
   // the stuff in the world
   
@@ -327,19 +330,22 @@ void update_physics_simulation(float deltaTime)
   for (int i = 0; i < num_flockers; i++) {
 
     btTransform trans;
-	bullet_rigidbodies[i]->setLinearVelocity(btVector3(xyz_velocity[i].x, xyz_velocity[i].y, xyz_velocity[i].z));
     bullet_rigidbodies[i]->getMotionState()->getWorldTransform(trans);
+	
+	
 	
     //      printf("%i height = %f\n", i, trans.getOrigin().getY()); fflush(stdout);
     xyz_positions[i].x = trans.getOrigin().getX();
     xyz_positions[i].y = trans.getOrigin().getY();
     xyz_positions[i].z = trans.getOrigin().getZ();
-    
     quat_orientations[i].x = trans.getRotation().getX();
     quat_orientations[i].y = trans.getRotation().getY();
     quat_orientations[i].z = trans.getRotation().getZ();
     quat_orientations[i].w = trans.getRotation().getW();
+
+
   }
+
 
   // put information back in flocker objects
   
@@ -398,7 +404,9 @@ int bullet_hello_main( int argc, char **argv )
     for (int i = 0; i < num_flockers; i++) {
 
       btTransform trans;
+	  bullet_rigidbodies[i]->setLinearVelocity(btVector3(xyz_velocity[i].x, xyz_velocity[i].y, xyz_velocity[i].z));
       bullet_rigidbodies[i]->getMotionState()->getWorldTransform(trans);
+
 
       xyz_positions[i].x = trans.getOrigin().getX();
       xyz_positions[i].y = trans.getOrigin().getY();
