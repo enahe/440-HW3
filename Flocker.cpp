@@ -12,6 +12,7 @@
 //----------------------------------------------------------------------------
 #define _USE_MATH_DEFINES
 #include "Flocker.hh"
+#include "Predator.hh"
 
 
 //----------------------------------------------------------------------------
@@ -21,6 +22,8 @@ int flocker_history_length = 30;
 int flocker_draw_mode = DRAW_MODE_POLY;
 vector <Flocker *> flocker_array;    
 vector <vector <double> > flocker_squared_distance;
+
+extern vector <Predator*> predator_array; 
 
 extern glm::mat4 ViewMat;
 extern glm::mat4 ProjectionMat;
@@ -69,6 +72,7 @@ Flocker::Flocker(int _index,
 		 double min_separate_distance, double max_separate_distance,  double separate_weight,
 		 double min_align_distance, double max_align_distance, double align_weight,
 		 double min_cohere_distance, double max_cohere_distance, double cohere_weight,
+		 double min_fr_distance, double max_fr_distance, double fr_weight,
 		 float r, float g, float b,
 		 int max_hist) : Creature(_index, init_x, init_y, init_z, init_vx, init_vy, init_vz, r, g, b, max_hist)
 { 
@@ -103,6 +107,15 @@ Flocker::Flocker(int _index,
   max_squared_cohesion_distance = max_cohesion_distance * max_cohesion_distance;
 
   inv_range_squared_cohesion_distance = 1.0 / (max_squared_cohesion_distance - min_squared_cohesion_distance);
+
+  fear_weight = fr_weight;
+  min_fear_distance = min_fr_distance;
+  min_squared_fear_distance = min_fear_distance * min_fear_distance;
+  max_fear_distance = max_fr_distance;
+  max_squared_fear_distance = max_fear_distance * max_fear_distance;
+
+  inv_range_squared_fear_distance = 1.0 / (max_squared_fear_distance - min_squared_fear_distance);
+
 }
 
 //----------------------------------------------------------------------------
@@ -438,6 +451,31 @@ void Flocker::draw(glm::mat4 Model)
 
 // side effect is putting values into SEPARATION_FORCE vector
 
+bool Flocker::compute_fear_force()
+{
+	int i;
+	glm::vec3 direction;
+	double mag;
+	glm::vec3 diff;
+	double diffNum;
+	double diffSqr;
+	double F;
+	bool afraid = false; 
+
+	fear_force = glm::vec3(0, 0, 0);
+	diff = position - predator_array[0]->position;
+	diffNum = glm::length2(diff);
+	diffSqr = diffNum * diffNum; 
+
+	if (diffSqr <= max_squared_fear_distance) {
+		F = max_squared_fear_distance / diffSqr - 1.0;
+		direction = (float)F * glm::normalize(diff);
+		fear_force += direction;
+		afraid = true;
+	}
+	return afraid; 
+}
+
 bool Flocker::compute_separation_force()
 {
   int j;
@@ -610,6 +648,9 @@ void Flocker::update()
   acceleration = glm::vec3(0, 0, 0);
   
   // deterministic behaviors
+
+  compute_fear_force();
+  acceleration += fear_force;
 
   compute_separation_force();
   acceleration += separation_force;

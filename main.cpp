@@ -386,6 +386,7 @@ void initialize_flocking_simulation()
 					  0.05, 0.5, uniform_random(0.01, 0.03),  // min, max separation distance, weight
 					  0.5,  1.0, uniform_random(0.0005, 0.002), // min, max alignment distance, weight
 					  1.0,  1.5, uniform_random(0.0005, 0.002), // min, max cohesion distance, weight
+		              1.0, 1.5,  uniform_random(0.01, 0.03),  // min, max fear distance, weight
 					//					  0.05, 0.5, 0.02,  // min, max separation distance, weight
 					//					  0.5,  1.0, 0.001, // min, max alignment distance, weight
 					//					  1.0,  1.5, 0.001, // min, max cohesion distance, weight

@@ -37,6 +37,7 @@ public:
   glm::vec3 separation_force;
   glm::vec3 alignment_force;
   glm::vec3 cohesion_force;
+  glm::vec3 fear_force;
 
   double random_force_limit;
 
@@ -55,6 +56,12 @@ public:
   double max_cohesion_distance, max_squared_cohesion_distance;
   double inv_range_squared_cohesion_distance;
 
+  double fear_weight;
+  double min_fear_distance, min_squared_fear_distance;
+  double max_fear_distance, max_squared_fear_distance;
+  double inv_range_squared_fear_distance;
+
+
   Flocker(int,                    // index
 	  double, double, double, // initial position
 	  double, double, double, // initial velocity
@@ -62,12 +69,14 @@ public:
 	  double, double, double, // min, max separation distance, weight
 	  double, double, double, // min, max alignment distance, weight
 	  double, double, double, // min, max cohesion distance, weight
+	  double, double, double, // min, max predator fear distance, weight
 	  float, float, float,    // base color
 	  int = 1);               // number of past states to save
 
   void draw();
   void draw(glm::mat4);
   void update();
+  bool compute_fear_force();
   bool compute_separation_force();
   bool compute_alignment_force();
   bool compute_cohesion_force();
